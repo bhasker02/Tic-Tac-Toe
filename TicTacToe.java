@@ -4,19 +4,28 @@ import javax.swing.*;
 
 public class TicTacToe {
     int boardWidth = 600;
-    int bardHeight = 650; //extra 50 height for text label
+    int bardHeight = 700; //extra 50 height for text label
 
     JFrame frame = new JFrame("Tic-Tac-Toe");
 
     JLabel textLabel = new JLabel(); //for heading
     JPanel textPanel = new JPanel(); //text for heading
     JPanel boardPanel = new JPanel(); //game board
+    JLabel statsText = new JLabel();
+    JPanel statsPanel = new JPanel();
 
     //butthons for each cell of board
     JButton[][] board = new JButton[3][3];
     String playerX = "X";
     String playerO = "O";
     String currentPlayer = playerX;
+
+    JButton xScore = new JButton();
+    JButton restart = new JButton();
+    JButton yScore = new JButton();
+
+    int x = 0;
+    int y = 0;
 
     //vars to track game result
     int turns = 0;
@@ -45,28 +54,25 @@ public class TicTacToe {
         frame.add(textPanel, BorderLayout.NORTH);
 
         //game board Panel
-        boardPanel.setLayout(new GridLayout(3, 3));
+        boardPanel.setLayout(new GridLayout(4, 3));
         boardPanel.setBackground(Color.darkGray);
         frame.add(boardPanel);
-
-
+       
+        
         //intialising each button/tile       
-        for ( int r = 0; r < 3; r++) {
-            for ( int c = 0; c < 3; c++) {
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
                 JButton tile = new JButton();
                 board[r][c] = tile;
                 boardPanel.add(tile);
 
-                tile.setBackground(Color.darkGray);
-                tile.setForeground(Color.white);
-                tile.setFont(new Font("Arial", Font.BOLD, 50));
-                tile.setFocusable(false);
-                //tile.setText(currentPlayer);
-             
+                tileinit(tile, "");
+
                 tile.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if (gameOver) {
                             ResetGame();
+
                             return;
                         }
 
@@ -81,12 +87,38 @@ public class TicTacToe {
                                 System.out.println(currentPlayer + "'s turn --" + gameOver);
                                 textLabel.setText(currentPlayer + "'s turn.");
                             }
-                            
+
                         }
                     }
                 });
             }
         }
+
+        
+        String xno = "X: " + x;
+        tileinit(xScore, xno);
+
+        
+        tileinit(restart, "Restart");
+        restart.setFont(new Font("Arial", Font.BOLD, 35));;
+
+        String yno = "Y: " + y;
+        tileinit(yScore,yno);
+
+        boardPanel.add(xScore);
+        boardPanel.add(restart);
+        boardPanel.add(yScore);
+
+        restart.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                x = 0;
+                y = 0;
+                xScore.setText("X: " + x);
+                yScore.setText("Y: "+y);
+               ResetGame();
+            }
+        });
+        
     }
 
     void checkWinner() {
@@ -144,6 +176,14 @@ public class TicTacToe {
 
     void setWinnerTitle() {
         textLabel.setText("Winner is " + currentPlayer);
+        if (currentPlayer == playerX) {
+            x++;
+            xScore.setText("X: "+x);
+        }
+        if (currentPlayer == playerO) {
+            y++;
+            yScore.setText("Y: "+y);
+        }
         gameOver = true;
         return;
     }
@@ -163,8 +203,9 @@ public class TicTacToe {
         }
         return;
     }
-    void ResetGame(){
-        
+
+    void ResetGame() {
+
         gameOver = false;
         textLabel.setText("Tic-Tac-Toe");
         turns = 0;
@@ -178,6 +219,14 @@ public class TicTacToe {
             }
         }
         return;
+    }
+
+    void tileinit(JButton tile, String text) {
+        tile.setBackground(Color.darkGray);
+        tile.setForeground(Color.white);
+        tile.setFont(new Font("Arial", Font.BOLD, 50));
+        tile.setFocusable(false);
+        tile.setText(text);
     }
 
    
